@@ -3,26 +3,37 @@ import { build, emptyDir } from "https://deno.land/x/dnt/mod.ts";
 await emptyDir("./npm");
 
 await build({
+  packageManager: 'pnpm',
   entryPoints: [
     "./mod.ts",
-    "./response.ts",
-    "./route.ts",
-    "./router.ts",
-    "./util.ts",
+    { name: "./response", path: "./response.ts" },
+    { name: "./route", path: "./route.ts" },
+    { name: "./router", path: "./router.ts" },
+    { name: "./routing", path: "./routing.ts" },
+    { name: "./util", path: "./util.ts" },
   ],
   outDir: "./npm",
   scriptModule: false,
   esModule: true,
+  typeCheck: false,
   shims: {
-    custom: [{
-      package: { name: "stream/web" },
-      globalNames: ["ReadableStream"],
-    }],
+    custom: [
+      // {
+      // package: {
+      //   name: "urlpattern-polyfill",
+      // },
+      // globalNames: ["URLPattern"]
+      // }
+      // {
+      //   package: { name: "stream/web" },
+      //   globalNames: ["ReadableStream"],
+      // }
+    ],
   },
   test: false,
   compilerOptions: {
     target: "ES2021",
-    lib: ["es2021", "dom"]
+    lib: ["es2021", "dom", "dom.iterable"]
   },
   package: {
     name: "websi",

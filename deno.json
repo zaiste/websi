@@ -1,0 +1,21 @@
+{
+  "imports": {
+    "testing/": "https://deno.land/std@0.176.0/testing/"
+  },
+  "tasks": {
+    "build:npm": "deno run -A scripts/build.ts"
+  },
+  "fmt": {
+    "files": {
+      "exclude": [
+        "README.md"
+      ]
+    },
+    "options": {
+      "useTabs": true,
+      "lineWidth": 101,
+      "indentWidth": 2,
+      "singleQuote": true
+    }
+  }
+}

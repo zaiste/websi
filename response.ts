@@ -5,17 +5,14 @@ import { isPlainObject } from './util.ts';
 export const OK = <T = PlainObject>(body: BodyInit | T, headers = {}) => {
   const init = { status: 200, headers };
   return isPlainObject<T>(body) || Array.isArray(body)
-    ? Response.json(body, init)
+    ? JSON(body, init)
     : new Response(body, init);
 };
 
-export const Created = <T = PlainObject>(
-  body: BodyInit | T = '',
-  headers = {},
-) => {
+export const Created = <T = PlainObject>(body: BodyInit | T = '', headers = {}) => {
   const init = { status: 201, headers };
-  return isPlainObject<T>(body)
-    ? Response.json(body, init)
+  return isPlainObject<T>(body) || Array.isArray(body)
+    ? JSON(body, init)
     : new Response(body, init);
 };
 
@@ -31,21 +28,21 @@ export const BadRequest = <T = PlainObject>(body: BodyInit | T = '') => {
   const init = { status: 400 };
 
   return isPlainObject<T>(body) || Array.isArray(body)
-    ? Response.json(body, init)
+    ? JSON(body, init)
     : new Response(body, init);
 };
 
 export const Unauthorized = <T = PlainObject>(body: BodyInit | T = '') => {
   const init = { status: 401 };
   return isPlainObject<T>(body) || Array.isArray(body)
-    ? Response.json(body, init)
+    ? JSON(body, init)
     : new Response(body, init);
 };
 
 export const Forbidden = <T = PlainObject>(body: BodyInit | T = '') => {
   const init = { status: 403 };
   return isPlainObject<T>(body) || Array.isArray(body)
-    ? Response.json(body, init)
+    ? JSON(body, init)
     : new Response(body, init);
 };
 
@@ -58,7 +55,7 @@ export const NotAcceptable = () => new Response('', { status: 406 });
 export const Conflict = <T = PlainObject>(body: BodyInit | T = '') => {
   const init = { status: 409 };
   return isPlainObject<T>(body) || Array.isArray(body)
-    ? Response.json(body, init)
+    ? JSON(body, init)
     : new Response(body, init);
 };
 
@@ -67,8 +64,9 @@ export const InternalServerError = <T = PlainObject>(
   body: BodyInit | T = '',
 ) => {
   const init = { status: 500 };
+
   return isPlainObject<T>(body) || Array.isArray(body)
-    ? Response.json(body, init)
+    ? JSON(body, init)
     : new Response(body, init);
 };
 
@@ -81,3 +79,13 @@ export const HTML = (body: string | ReadableStream, headers = {}) =>
   });
 
 export const Plain = (body?: BodyInit, init?: ResponseInit) => new Response(body, init);
+
+// FIXME why `body` cannot be `PlainObject` -> ask Michal
+export const JSON = (body: unknown, { status, headers }: ResponseInit) => {
+  const json = globalThis.JSON.stringify(body, null, 2);
+
+  return new Response(json, {
+    status,
+    headers: { ...headers || {}, 'Content-Type': 'application/json; charset=utf-8' },
+  })
+}

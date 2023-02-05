@@ -31,3 +31,8 @@ export function isHandler(
 
 export const compose = <T extends CallableFunction, U>(...functions: T[]) => (args: U) =>
   functions.reduceRight((arg, fn) => fn(arg), args);
+
+export const segmentize = (pathname: string) => {
+  const segments = pathname.split('/')
+  return (segments[0] === '') ? segments.slice(1) : segments;
+}

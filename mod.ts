@@ -1,4 +1,6 @@
-export type PlainObject = Record<string, unknown> | Array<PlainObject>;
+import { Routing } from "./routing.ts";
+
+export type PlainObject = Record<string, unknown> | PlainObject[];
 
 export type MaybePromise<T> = T | Promise<T>;
 
@@ -17,6 +19,8 @@ export interface RequestExtension {
     [name: string]: File;
   };
 }
+
+export type _Request = Request & RequestExtension;
 
 export type Handler = <T extends Context>(request: Request & RequestExtension, context: T) => MaybePromise<Response>;
 export type Middleware = (handler: Handler) => Handler;
@@ -58,6 +62,7 @@ export const HTTPMethod = {
   HEAD: 'HEAD',
   OPTIONS: 'OPTIONS',
   DELETE: 'DELETE',
+  ANY: 'ANY',
 } as const;
 export type HTTPMethod = typeof HTTPMethod[keyof typeof HTTPMethod];
 
@@ -74,3 +79,9 @@ export interface KeyValue {
   name: string;
   value: string;
 }
+
+export const Server = (routes: Routes) => ({
+  fetch: Routing(routes)
+})
+
+export { Router } from './router.ts'

@@ -39,6 +39,7 @@ await build({
     name: "websi",
     version: Deno.args[0],
     description: "Web Server Interface: Universal HTTP abstraction for TypeScript",
+    type: "module",
     author: "Zaiste",
     license: "Apache-2.0",
     homepage: "https://websi.dev",

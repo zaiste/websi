@@ -80,8 +80,13 @@ export interface KeyValue {
   value: string;
 }
 
-export const Server = (routes: Routes) => ({
-  fetch: Routing(routes)
+export interface Options {
+  port: number
+}
+
+export const Server = (routes: Routes, options: Options = { port: 4000 }) => ({
+  fetch: Routing(routes),
+  ...options
 })
 
 export { Router } from './router.ts'

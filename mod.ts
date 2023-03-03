@@ -58,7 +58,7 @@ export const HTTPMethod = {
   GET: 'GET',
   POST: 'POST',
   PUT: 'PUT',
-  PATH: 'PATCH',
+  PATCH: 'PATCH',
   HEAD: 'HEAD',
   OPTIONS: 'OPTIONS',
   DELETE: 'DELETE',

@@ -1,77 +1,54 @@
-import type { Handler, HTTPMethod, Meta, Middleware, Pipeline, Route, RouteOptions } from './mod.ts';
+import type { Handler, HTTPMethod, Meta, Middleware, Pipeline, Route } from './mod.ts';
 
 import { isPipeline } from './util.ts';
 
-function makeRoute(
+function createRoute(
   name: HTTPMethod,
   path: string,
-  handler: Handler | Pipeline,
-  middleware: Middleware[],
+  action: Handler | Pipeline,
   meta: Meta,
 ): Route {
-  if (isPipeline(handler)) {
-    const h = handler.pop() as Handler;
+  if (isPipeline(action)) {
+    const h = action.pop() as Handler;
     return [
       path,
       {
         [name]: h,
-        middleware: [...middleware, ...(handler as Middleware[])],
+        middleware: [...(action as Middleware[])],
         meta,
       },
     ];
   } else {
-    return [path, { [name]: handler, middleware, meta }];
+    return [path, { [name]: action, middleware: [], meta }];
   }
 }
 
-export function GET(
-  path: string,
-  handler: Handler | Pipeline,
-  { middleware = [], meta = {} }: RouteOptions = {},
-): Route {
-  return makeRoute('GET', path, handler, middleware, meta);
+// use partial func application below
+
+export function GET(path: string, action: Handler | Pipeline, meta: Meta = {}) {
+  return createRoute('GET', path, action, meta);
 }
 
-export function POST(
-  path: string,
-  handler: Handler | Pipeline,
-  { middleware = [], meta = {} }: RouteOptions = {},
-): Route {
-  return makeRoute('POST', path, handler, middleware, meta);
+export function POST(path: string, action: Handler | Pipeline, meta: Meta = {}) {
+  return createRoute('POST', path, action, meta);
 }
 
-export function PATCH(
-  path: string,
-  handler: Handler | Pipeline,
-  { middleware = [], meta = {} }: RouteOptions = {},
-): Route {
-  return makeRoute('PATCH', path, handler, middleware, meta);
+export function PATCH(path: string, action: Handler | Pipeline, meta: Meta = {}) {
+  return createRoute('PATCH', path, action, meta);
 }
 
-export function PUT(
-  path: string,
-  handler: Handler | Pipeline,
-  { middleware = [], meta = {} }: RouteOptions = {},
-): Route {
-  return makeRoute('PUT', path, handler, middleware, meta);
+export function PUT(path: string, action: Handler | Pipeline, meta: Meta = {}) {
+  return createRoute('PUT', path, action, meta);
 }
 
-export function DELETE(
-  path: string,
-  handler: Handler | Pipeline,
-  { middleware = [], meta = {} }: RouteOptions = {},
-): Route {
-  return makeRoute('DELETE', path, handler, middleware, meta);
+export function DELETE(path: string, action: Handler | Pipeline, meta: Meta = {}) {
+  return createRoute('DELETE', path, action, meta);
 }
 
-export function OPTIONS(
-  path: string,
-  handler: Handler | Pipeline,
-  { middleware = [], meta = {} }: RouteOptions = {},
-): Route {
-  return makeRoute('OPTIONS', path, handler, middleware, meta);
+export function OPTIONS(path: string, action: Handler | Pipeline, meta: Meta = {}) {
+  return createRoute('OPTIONS', path, action, meta);
 }
 
-export function ANY(path: string, handler: Handler | Pipeline, { middleware = [], meta = {} }: RouteOptions = {}) {
-  return makeRoute('ANY', path, handler, middleware, meta)
+export function ANY(path: string, action: Handler | Pipeline, meta: Meta = {}) {
+  return createRoute('ANY', path, action, meta)
 }

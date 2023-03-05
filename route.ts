@@ -63,3 +63,15 @@ export function DELETE(
 ): Route {
   return makeRoute('DELETE', path, handler, middleware, meta);
 }
+
+export function OPTIONS(
+  path: string,
+  handler: Handler | Pipeline,
+  { middleware = [], meta = {} }: RouteOptions = {},
+): Route {
+  return makeRoute('OPTIONS', path, handler, middleware, meta);
+}
+
+export function ANY(path: string, handler: Handler | Pipeline, { middleware = [], meta = {} }: RouteOptions = {}) {
+  return makeRoute('ANY', path, handler, middleware, meta)
+}

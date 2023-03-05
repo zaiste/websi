@@ -22,7 +22,8 @@ export interface RequestExtension {
 
 export type _Request = Request & RequestExtension;
 
-export type Handler = <T extends Context>(request: Request & RequestExtension, context: T) => MaybePromise<Response>;
+// deno-lint-ignore no-explicit-any
+export type Handler = (request: Request & RequestExtension, arg1: any, arg2: any) => MaybePromise<Response>;
 export type Middleware = (handler: Handler) => Handler;
 export type Pipeline = [...Middleware[], Handler];
 export type ReversedPipeline = [Handler, ...Middleware[]];

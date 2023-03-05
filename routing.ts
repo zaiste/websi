@@ -1,4 +1,4 @@
-import type { Handler, Middleware, Params, Pipeline, Routes, RequestExtension, Context, _Request, } from './mod.ts';
+import type { Handler, Middleware, Params, Pipeline, Routes, RequestExtension, _Request, } from './mod.ts';
 
 import { HTTPMethod } from './mod.ts';
 import { isHandler, isHandlerMapping, isPipeline, compose } from './util.ts';
@@ -65,7 +65,7 @@ const parseBody = async (request: Request) => {
 
 const RouteFinder = (router: Router): Middleware => {
   return (nextHandler: Handler) =>
-    async (request: Request & RequestExtension, context) => {
+    async (request: Request & RequestExtension, arg1, arg2) => {
       const { method, url } = request;
 
       const pathname = new URL(url).pathname;
@@ -85,9 +85,9 @@ const RouteFinder = (router: Router): Middleware => {
         request.params = { ...queryParams, ...pathParams, ...bodyParams };
         request.files = files;
 
-        return await foundHandler(request, context);
+        return await foundHandler(request, arg1, arg2);
       } else {
-        return nextHandler(request, context);
+        return nextHandler(request, arg1, arg2);
       }
     };
 };
@@ -142,14 +142,12 @@ export const Routing = (routes: Routes = []) => {
 
   const pipeline = compose<Middleware, Handler>(...middlewares, RouteFinder(router))((_) => Response.NotFound());
 
-  return (request: Request, connInfo: any) => {
-    (request as _Request).params = {};
-    (request as _Request).files = {};
+  // deno-lint-ignore no-explicit-any
+  return (req: Request, arg1: any, arg2: any) => {
+    const request = req as _Request;
+    request.params = {};
+    request.files = {};
 
-    const context: Context = {
-      connInfo,
-    }
-
-    return pipeline(request as _Request, context);
+    return pipeline(request, arg1, arg2);
   };
 };

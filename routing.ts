@@ -140,7 +140,8 @@ export const Routing = (routes: Routes = []) => {
     }
   }
 
-  const pipeline = compose<Middleware, Handler>(...middlewares, RouteFinder(router))((_) => Response.NotFound());
+  const NotFound: Handler = (_) => Response.NotFound();
+  const pipeline = compose<Middleware, Handler>(...middlewares, RouteFinder(router))(NotFound);
 
   // deno-lint-ignore no-explicit-any
   return (req: Request, arg1: any, arg2: any) => {

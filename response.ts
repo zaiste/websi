@@ -89,3 +89,9 @@ export const JSON = (body: unknown, { status, headers }: ResponseInit) => {
     headers: { ...headers || {}, 'Content-Type': 'application/json; charset=utf-8' },
   })
 }
+
+export const EventStream = (body: string | ReadableStream, headers = {}, status = 200) =>
+  new Response(body, {
+    status,
+    headers: { ...headers, 'Content-Type': 'text/event-stream' },
+  });
